@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_purify/screens/child_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -20,6 +21,21 @@ class HomeScreenState extends State<HomeScreen>{
           SizedBox(
             child: ElevatedButton(
               child: Text(
+                  "Create new profile"
+              ),
+              onPressed: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChildProfileCreationScreen()
+                    )
+                );
+              },
+            ),
+          ),
+          SizedBox(
+            child: ElevatedButton(
+              child: Text(
                   "back"
               ),
               onPressed: (){
@@ -31,5 +47,4 @@ class HomeScreenState extends State<HomeScreen>{
       )
     );
   }
-
 }
