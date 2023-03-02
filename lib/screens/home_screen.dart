@@ -11,40 +11,42 @@ class HomeScreen extends StatefulWidget{
 class HomeScreenState extends State<HomeScreen>{
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "ini home"
-          ),
-          SizedBox(
-            child: ElevatedButton(
-              child: Text(
-                  "Create new profile"
-              ),
-              onPressed: (){
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChildProfileCreationScreen()
-                    )
-                );
-              },
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "ini home"
             ),
-          ),
-          SizedBox(
-            child: ElevatedButton(
-              child: Text(
-                  "back"
+            SizedBox(
+              child: ElevatedButton(
+                child: Text(
+                    "Create new profile"
+                ),
+                onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChildProfileCreationScreen()
+                      )
+                  );
+                },
               ),
-              onPressed: (){
-                Navigator.pop(context);
-              },
             ),
-          ),
-        ],
-      )
+            SizedBox(
+              child: ElevatedButton(
+                child: Text(
+                    "back"
+                ),
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
+        )
+      ),
     );
   }
 }

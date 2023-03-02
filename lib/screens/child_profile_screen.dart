@@ -17,7 +17,7 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             "Ini screen untuk buat child profile",
