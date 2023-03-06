@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:project_purify/screens/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/child_profile.dart';
 
-void main() {
-  runApp(const MyApp());
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await ChildProfilePreferences.init();
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ChildProfileProvider.init())
+    ],
+    child: MyApp()
+  ));
 }
 
 class MyApp extends StatelessWidget {

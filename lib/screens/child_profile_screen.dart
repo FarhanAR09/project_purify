@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_purify/providers/child_profile.dart';
 
 class ChildProfileCreationScreen extends StatefulWidget{
   @override
@@ -27,6 +28,7 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             width: double.infinity,
             height: 32,
             child: TextFormField(
+              keyboardType: TextInputType.text,
               controller: _nameController,
               decoration: const InputDecoration(
                 hintText: "Nama",
@@ -37,6 +39,7 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             width: double.infinity,
             height: 32,
             child: TextFormField(
+              keyboardType: TextInputType.number,
               controller: _ageController,
               decoration: const InputDecoration(
                 hintText: "Usia",
@@ -47,6 +50,7 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             width: double.infinity,
             height: 32,
             child: TextFormField(
+              keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: true),
               controller: _weightController,
               decoration: const InputDecoration(
                 hintText: "Berat Badan",
@@ -57,7 +61,10 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             height: 32,
             child: ElevatedButton(
               onPressed: (){
-                //TODO: submit form
+                if (_nameController.value != null && _ageController.value != null && _weightController != null){
+                  //ChildProfile.SetName(_nameController.value.toString());
+                  //TODO: SetAge() dan SetWeight()
+                }
               },
               child: Text(
                   "Create Profile"
