@@ -19,10 +19,20 @@ class ChildProfileProvider with ChangeNotifier {
   int? _currentIndex;
   List<ChildProfile>? _childProfiles;
 
-  ChildProfile? GetChildProfile(){
+  ChildProfile? GetCurrentProfile(){
     if (_childProfiles != null && _currentIndex != null){
       SyncProviderPreferences();
       return _childProfiles![_currentIndex!];
+    }
+    else {
+      throw NullThrownError();
+    }
+  }
+
+  List<ChildProfile>? GetProfiles(){
+    if (_childProfiles != null){
+      SyncProviderPreferences();
+      return _childProfiles!;
     }
     else {
       throw NullThrownError();
@@ -119,6 +129,12 @@ class ChildProfile {
   late String _name;
   late int _age;
   late double _weight;
+
+  ChildProfile(String name, int age, double weight){
+    _name = name;
+    _age = age;
+    _weight = weight;
+  }
 
   String GetName() => _name;
   void SetName(String name) => _name = name;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_purify/providers/child_profile.dart';
+import 'package:provider/provider.dart';
 
 class ChildProfileCreationScreen extends StatefulWidget{
   @override
@@ -12,6 +13,15 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
   TextEditingController _nameController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
+
+  String ConvertCommaToDot(String str){
+    for (int i = 0; i < str.length; i++){
+      if (str[i] == ','){
+        str.replaceRange(i, i, '.');
+      }
+    }
+    return str;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +71,16 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             height: 32,
             child: ElevatedButton(
               onPressed: (){
-                if (_nameController.value != null && _ageController.value != null && _weightController != null){
-                  //ChildProfile.SetName(_nameController.value.toString());
-                  //TODO: SetAge() dan SetWeight()
+                if (_nameController.value != null && _ageController.value != null && _weightController.value != null){
+                  String age = ConvertCommaToDot(_ageController.value.toString());
+                  String weight = ConvertCommaToDot(_weightController.value.toString());
+                  ChildProfile childProfile = ChildProfile(
+                      _nameController.value.toString(),
+                      int.parse(age),
+                      double.parse(weight)
+                  );
+                  context.read<ChildProfileProvider>().CreateProfile(childProfile);
+                  //TODO: cek bener gak
                 }
               },
               child: Text(
