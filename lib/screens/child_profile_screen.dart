@@ -14,6 +14,7 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
   TextEditingController _ageController = TextEditingController();
   TextEditingController _weightController = TextEditingController();
 
+  //TODO: Ganti replace all
   String ConvertCommaToDot(String str){
     for (int i = 0; i < str.length; i++){
       if (str[i] == ','){
@@ -72,15 +73,25 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
             child: ElevatedButton(
               onPressed: (){
                 if (_nameController.value != null && _ageController.value != null && _weightController.value != null){
-                  String age = ConvertCommaToDot(_ageController.value.toString());
-                  String weight = ConvertCommaToDot(_weightController.value.toString());
+                  String age = _ageController.value.text;
+                  String weight = _weightController.value.text.replaceAll(',', '.');
+
+                  print(int.parse(age));
+                  print(double.parse(weight));
+
                   ChildProfile childProfile = ChildProfile(
-                      _nameController.value.toString(),
-                      int.parse(age),
-                      double.parse(weight)
+                      _nameController.text,
+                      //TODO: ini tes constructor
+                      //TODO: formatter
+                      10,   //int.parse(age.replaceAll(RegExp(r'[^0-9]'),'')),
+                      4.5   //double.parse(weight.replaceAll(RegExp(r'[^0-9]'),''))
                   );
                   context.read<ChildProfileProvider>().CreateProfile(childProfile);
-                  //TODO: cek bener gak
+
+                  //Reset TextFormField
+                  _nameController.clear();
+                  _ageController.clear();
+                  _weightController.clear();
                 }
               },
               child: Text(

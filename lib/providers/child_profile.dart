@@ -1,9 +1,11 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class ChildProfilePreferences {
-  //TODO: table check
   static SharedPreferences? _preferences;
   static const key = 'key';
 
@@ -24,25 +26,23 @@ class ChildProfileProvider with ChangeNotifier {
       SyncProviderPreferences();
       return _childProfiles![_currentIndex!];
     }
-    else {
-      throw NullThrownError();
-    }
   }
 
   List<ChildProfile>? GetProfiles(){
-    if (_childProfiles != null){
+
       SyncProviderPreferences();
-      return _childProfiles!;
-    }
-    else {
-      throw NullThrownError();
-    }
+      return _childProfiles;
+
+
+
+
   }
 
   void SetPreferences(SharedPreferences pref){
     _preferences = pref;
   }
 
+  //TODO: implement ChangeChildProfile
   void ChangeChildProfile({required int to}){
     if (_childProfiles != null){
       if (to < _childProfiles!.length){
@@ -51,9 +51,6 @@ class ChildProfileProvider with ChangeNotifier {
         notifyListeners();
       }
     }
-    else {
-      throw NullThrownError();
-    }
   }
 
   void CreateProfile(ChildProfile profile){
@@ -61,7 +58,7 @@ class ChildProfileProvider with ChangeNotifier {
       _childProfiles!.add(profile);
       SyncProviderPreferences();
     }
-    else {
+    else{
       throw NullThrownError();
     }
   }
@@ -72,6 +69,12 @@ class ChildProfileProvider with ChangeNotifier {
     ChildProfileProvider provider = ChildProfileProvider();
     provider.SetPreferences(ChildProfilePreferences.GetPreferences());
     provider.DecodeFromPreferences();
+
+    //If no profile yet
+    if (provider._childProfiles == null){
+      provider._childProfiles = <ChildProfile>[];
+    }
+
     return provider;
   }
 
@@ -79,38 +82,54 @@ class ChildProfileProvider with ChangeNotifier {
     //TODO: cek bener engga
     String json;
     if (_preferences != null){
-      json = jsonEncode(
-          {
-            'currentIndex' : _currentIndex,
-            'profiles' : _childProfiles
-          }
-      );
+      if (_currentIndex == null){
+        _currentIndex = 0;
+      }
+      assert(_childProfiles != null);
+      assert(_childProfiles!.length > 0);
+      assert(_currentIndex != null);
+      List<Map<String,dynamic>> profileMaps = <Map<String,dynamic>>[];
+      for (int i = 0; i < _childProfiles!.length; i++){
+        profileMaps.add(_childProfiles![i].toMap());
+      }
+      Map<String, dynamic> map = {
+        'currentIndex' : _currentIndex!,
+        'profiles' : profileMaps
+      };
+      json = jsonEncode(map);
+      assert(json != null);
       _preferences!.setString('key', json);
     }
   }
 
   void DecodeFromPreferences(){
-    //TODO: cek bener engga
+    //TODO: fix kalo belum punya profile, jangan throw error
     String json;
     final decodedJson;
+
+    //Reset Provider
+    if (_childProfiles != null){
+      _childProfiles = <ChildProfile>[];
+    }
+    _currentIndex = null;
+
+    //Get from Preferences and Set to Provider's Variables
     if (_preferences != null){
       json = _preferences!.getString('key').toString();
       decodedJson = jsonDecode(json);
       if (decodedJson != null){
         if (decodedJson['currentIndex'] != null && decodedJson['profiles'] != null){
           _currentIndex = decodedJson['currentIndex'];
-          _childProfiles = decodedJson['profiles'];
-        }
-        else {
-          throw NullThrownError();
+          print(decodedJson['profiles']);
+          List<dynamic> _profileMaps = decodedJson['profiles'];
+          if (_profileMaps.isNotEmpty){
+            _childProfiles ??= <ChildProfile>[];
+            for (int i = 0; i < _profileMaps.length; i++){
+              _childProfiles!.add(ChildProfile.fromMap(_profileMaps[i]));
+            }
+          }
         }
       }
-      else {
-        throw NullThrownError();
-      }
-    }
-    else {
-      throw NullThrownError();
     }
   }
 
@@ -118,9 +137,6 @@ class ChildProfileProvider with ChangeNotifier {
     if (_preferences != null){
       EncodeToPreferences();
       DecodeFromPreferences();
-    }
-    else {
-      throw NullThrownError();
     }
   }
 }
@@ -134,6 +150,21 @@ class ChildProfile {
     _name = name;
     _age = age;
     _weight = weight;
+  }
+
+  factory ChildProfile.fromMap(Map<String,dynamic> map){
+    assert(map['name'] != null);
+    assert(map['age'] != null);
+    assert(map['weight'] != null);
+    return ChildProfile(map['name'], map['age'], map['weight']);
+  }
+
+  Map<String,dynamic> toMap(){
+    return {
+      'name' : _name,
+      'age' : _age,
+      'weight' : _weight
+    };
   }
 
   String GetName() => _name;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:project_purify/screens/child_profile_screen.dart';
 import 'package:project_purify/screens/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:project_purify/providers/child_profile.dart';
 
 class LoginScreen extends StatelessWidget{
   @override
@@ -12,8 +15,13 @@ class LoginScreen extends StatelessWidget{
                   "Login"
               ),
               onPressed: (){
-                //TODO: bikin sistem profil buat if di sini. kalo belum punya profil bayi (null), gas ke bikin profil
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                if (Provider.of<ChildProfileProvider>(context, listen: false).GetCurrentProfile() != null){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                }
+                else{
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChildProfileCreationScreen()));
+                }
+
               },
             ),
         )

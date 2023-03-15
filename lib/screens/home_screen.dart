@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_purify/providers/child_profile.dart';
 import 'package:project_purify/screens/child_profile_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -9,6 +11,8 @@ class HomeScreen extends StatefulWidget{
 }
 
 class HomeScreenState extends State<HomeScreen>{
+
+  //TODO: null while building home
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +23,7 @@ class HomeScreenState extends State<HomeScreen>{
             Text(
               "ini home"
             ),
+            BuildProfileContainer(),
             SizedBox(
               child: ElevatedButton(
                 child: Text(
@@ -48,5 +53,29 @@ class HomeScreenState extends State<HomeScreen>{
         )
       ),
     );
+  }
+
+  Widget BuildProfileContainer(){
+    ChildProfile? profile = context.watch<ChildProfileProvider>().GetCurrentProfile();
+    if (profile != null){
+      return Column(
+        children: [
+          Text(
+              profile.GetName()
+          ),
+          Text(
+              profile.GetAge().toString()
+          ),
+          Text(
+              profile.GetWeight().toString()
+          ),
+        ],
+      );
+    }
+    else{
+      return Container(
+        child: Text('No profile'),
+      );
+    }
   }
 }
