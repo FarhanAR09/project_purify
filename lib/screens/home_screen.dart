@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:project_purify/providers/child_profile.dart';
 import 'package:project_purify/screens/child_profile_screen.dart';
+import 'package:project_purify/screens/milestone_screen.dart';
+import 'package:project_purify/screens/tracker_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -12,7 +14,7 @@ class HomeScreen extends StatefulWidget{
 
 class HomeScreenState extends State<HomeScreen>{
 
-  //TODO: null while building home
+  //TODO: bikin milestone
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,13 +29,43 @@ class HomeScreenState extends State<HomeScreen>{
             SizedBox(
               child: ElevatedButton(
                 child: Text(
-                    "Create new profile"
+                    "Create or Change Profile"
                 ),
                 onPressed: (){
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ChildProfileCreationScreen()
+                      )
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              child: ElevatedButton(
+                child: Text(
+                    "Milestone"
+                ),
+                onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MilestoneScreen()
+                      )
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              child: ElevatedButton(
+                child: Text(
+                    "Tracker"
+                ),
+                onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TrackerScreen()
                       )
                   );
                 },
@@ -56,19 +88,25 @@ class HomeScreenState extends State<HomeScreen>{
   }
 
   Widget BuildProfileContainer(){
-    ChildProfile? profile = context.watch<ChildProfileProvider>().GetCurrentProfile();
+    ChildProfile? profile = context.watch<ChildProfileProvider>().getCurrentProfile();
     if (profile != null){
       return Column(
         children: [
           Text(
-              profile.GetName()
+            "Nama: ${profile.getName()}"
           ),
           Text(
-              profile.GetAge().toString()
+            "Age: ${profile.getAge().toString()}"
           ),
           Text(
-              profile.GetWeight().toString()
+            "Weight: ${profile.getWeight().toString()}"
           ),
+          Text(
+            "Height: ${profile.getHeight().toString()}"
+          ),
+          Text(
+            "Sex: ${profile.getSex().toString()}"
+          )
         ],
       );
     }

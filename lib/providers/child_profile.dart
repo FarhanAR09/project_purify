@@ -1,7 +1,4 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -13,7 +10,7 @@ class ChildProfilePreferences {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  static GetPreferences() => _preferences;
+  static getPreferences() => _preferences;
 }
 
 class ChildProfileProvider with ChangeNotifier {
@@ -21,42 +18,37 @@ class ChildProfileProvider with ChangeNotifier {
   int? _currentIndex;
   List<ChildProfile>? _childProfiles;
 
-  ChildProfile? GetCurrentProfile(){
+  ChildProfile? getCurrentProfile(){
     if (_childProfiles != null && _currentIndex != null){
-      SyncProviderPreferences();
+      syncProviderPreferences();
       return _childProfiles![_currentIndex!];
     }
+    return null;
   }
 
-  List<ChildProfile>? GetProfiles(){
-
-      SyncProviderPreferences();
+  List<ChildProfile>? getProfiles(){
+      syncProviderPreferences();
       return _childProfiles;
-
-
-
-
   }
 
-  void SetPreferences(SharedPreferences pref){
+  void setPreferences(SharedPreferences pref){
     _preferences = pref;
   }
 
-  //TODO: implement ChangeChildProfile
-  void ChangeChildProfile({required int to}){
+  void changeChildProfile({required int to}){
     if (_childProfiles != null){
       if (to < _childProfiles!.length){
         _currentIndex = to;
-        SyncProviderPreferences();
+        syncProviderPreferences();
         notifyListeners();
       }
     }
   }
 
-  void CreateProfile(ChildProfile profile){
+  void createProfile(ChildProfile profile){
     if (_childProfiles != null) {
       _childProfiles!.add(profile);
-      SyncProviderPreferences();
+      syncProviderPreferences();
     }
     else{
       throw NullThrownError();
@@ -67,27 +59,19 @@ class ChildProfileProvider with ChangeNotifier {
 
   factory ChildProfileProvider.init(){
     ChildProfileProvider provider = ChildProfileProvider();
-    provider.SetPreferences(ChildProfilePreferences.GetPreferences());
-    provider.DecodeFromPreferences();
+    provider.setPreferences(ChildProfilePreferences.getPreferences());
+    provider.decodeFromPreferences();
 
     //If no profile yet
-    if (provider._childProfiles == null){
-      provider._childProfiles = <ChildProfile>[];
-    }
+    provider._childProfiles ??= <ChildProfile>[];
 
     return provider;
   }
 
-  void EncodeToPreferences(){
-    //TODO: cek bener engga
+  void encodeToPreferences(){
     String json;
     if (_preferences != null){
-      if (_currentIndex == null){
-        _currentIndex = 0;
-      }
-      assert(_childProfiles != null);
-      assert(_childProfiles!.length > 0);
-      assert(_currentIndex != null);
+      _currentIndex ??= 0;
       List<Map<String,dynamic>> profileMaps = <Map<String,dynamic>>[];
       for (int i = 0; i < _childProfiles!.length; i++){
         profileMaps.add(_childProfiles![i].toMap());
@@ -97,15 +81,13 @@ class ChildProfileProvider with ChangeNotifier {
         'profiles' : profileMaps
       };
       json = jsonEncode(map);
-      assert(json != null);
       _preferences!.setString('key', json);
     }
   }
 
-  void DecodeFromPreferences(){
-    //TODO: fix kalo belum punya profile, jangan throw error
+  void decodeFromPreferences(){
     String json;
-    final decodedJson;
+    dynamic decodedJson;
 
     //Reset Provider
     if (_childProfiles != null){
@@ -120,12 +102,12 @@ class ChildProfileProvider with ChangeNotifier {
       if (decodedJson != null){
         if (decodedJson['currentIndex'] != null && decodedJson['profiles'] != null){
           _currentIndex = decodedJson['currentIndex'];
-          print(decodedJson['profiles']);
-          List<dynamic> _profileMaps = decodedJson['profiles'];
-          if (_profileMaps.isNotEmpty){
+          //print(decodedJson['profiles']);
+          List<dynamic> profileMaps = decodedJson['profiles'];
+          if (profileMaps.isNotEmpty){
             _childProfiles ??= <ChildProfile>[];
-            for (int i = 0; i < _profileMaps.length; i++){
-              _childProfiles!.add(ChildProfile.fromMap(_profileMaps[i]));
+            for (int i = 0; i < profileMaps.length; i++){
+              _childProfiles!.add(ChildProfile.fromMap(profileMaps[i]));
             }
           }
         }
@@ -133,44 +115,55 @@ class ChildProfileProvider with ChangeNotifier {
     }
   }
 
-  void SyncProviderPreferences(){
+  void syncProviderPreferences(){
+    //TODO: error kalo nambah field pas udah punya profile, bikin null safety atau default value
     if (_preferences != null){
-      EncodeToPreferences();
-      DecodeFromPreferences();
+      encodeToPreferences();
+      decodeFromPreferences();
     }
   }
 }
 
 class ChildProfile {
-  late String _name;
-  late int _age;
-  late double _weight;
+  late String _name = '';
+  late int _age = 0;
+  late double _weight = 0.0;
+  late double _height = 0.0;
+  late bool _sex = true;
 
-  ChildProfile(String name, int age, double weight){
+  ChildProfile(String name, int age, double weight, double height, bool sex){
     _name = name;
     _age = age;
     _weight = weight;
+    _height = height;
+    _sex = sex;
   }
 
   factory ChildProfile.fromMap(Map<String,dynamic> map){
-    assert(map['name'] != null);
-    assert(map['age'] != null);
-    assert(map['weight'] != null);
-    return ChildProfile(map['name'], map['age'], map['weight']);
+    //assert(map['name'] != null);
+    //assert(map['age'] != null);
+    //assert(map['weight'] != null);
+    return ChildProfile(map['name'], map['age'], map['weight'], map['height'], map['sex']);
   }
 
   Map<String,dynamic> toMap(){
     return {
       'name' : _name,
       'age' : _age,
-      'weight' : _weight
+      'weight' : _weight,
+      'height' : _height,
+      'sex' : _sex
     };
   }
 
-  String GetName() => _name;
-  void SetName(String name) => _name = name;
-  int GetAge() => _age;
-  void SetAge(int age) => _age = age;
-  double GetWeight() => _weight;
-  void SetWeight(double weight) => _weight = weight;
+  String getName() => _name;
+  void setName(String name) => _name = name;
+  int getAge() => _age;
+  void setAge(int age) => _age = age;
+  double getWeight() => _weight;
+  void setWeight(double weight) => _weight = weight;
+  double getHeight() => _height;
+  void setHeight(bool sex) => _sex = sex;
+  bool getSex() => _sex;
+  void setSex(bool sex) => _sex = sex;
 }

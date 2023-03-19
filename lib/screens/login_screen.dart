@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget{
                   "Login"
               ),
               onPressed: (){
-                if (Provider.of<ChildProfileProvider>(context, listen: false).GetCurrentProfile() != null){
+                if (Provider.of<ChildProfileProvider>(context, listen: false).getCurrentProfile() != null){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
                 }
                 else{
