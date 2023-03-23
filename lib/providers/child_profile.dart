@@ -26,6 +26,8 @@ class ChildProfileProvider with ChangeNotifier {
     return null;
   }
 
+  int? getIndex() => _currentIndex;
+
   List<ChildProfile>? getProfiles(){
       syncProviderPreferences();
       return _childProfiles;
