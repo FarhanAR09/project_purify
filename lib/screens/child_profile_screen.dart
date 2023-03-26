@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:project_purify/providers/child_profile.dart';
 import 'package:provider/provider.dart';
+import 'package:project_purify/screens/tracker_screen.dart';
 
 class ChildProfileCreationScreen extends StatefulWidget{
   @override
@@ -132,7 +133,8 @@ class ChildProfileCreationScreenState extends State<ChildProfileCreationScreen>{
                     _age,
                     double.parse(weight),
                     double.parse(height),
-                    _selectedSex
+                    _selectedSex,
+                    ChildNutrition(),
                   );
                   context.read<ChildProfileProvider>().createProfile(childProfile);
 

@@ -37,6 +37,55 @@ class Food{
   }
 }
 
+class ChildNutrition{
+  late double calorie;
+  late double protein;
+  late double fat;
+  late double carb;
+
+  ChildNutrition({
+    this.calorie = 0,
+    this.protein = 0,
+    this.fat = 0,
+    this.carb = 0,
+  });
+
+  factory ChildNutrition.fromMap(Map<String, dynamic> map){
+    return ChildNutrition(
+        calorie: map['calorie'],
+        protein: map['protein'],
+        fat: map['fat'],
+        carb: map['carb'],
+    );
+  }
+
+  factory ChildNutrition.fromFoodMap(Map<String, dynamic> map){
+    return ChildNutrition(
+      calorie: map['nutrients']['ENERC_KCAL'],
+      protein: map['nutrients']['PROCNT'],
+      fat: map['nutrients']['FAT'],
+      carb: map['nutrients']['CHOCDF'],
+    );
+  }
+
+  String toJson(){
+    return jsonEncode(toMap());
+  }
+
+  Map<String, dynamic> toMap(){
+    return {
+      'calorie' : calorie,
+      'protein' : protein,
+      'fat' : fat,
+      'carb' : carb,
+    };
+  }
+
+  String toString(){
+    return "Calorie: $calorie, Protein: $protein, Fat: $fat, Carb: $carb";
+  }
+}
+
 class TrackerScreen extends StatefulWidget{
   const TrackerScreen({super.key});
 
@@ -51,6 +100,7 @@ class TrackerScreenState extends State<TrackerScreen>{
   String? responseJson;
   Map<String, dynamic>? responseMap;
   Food? food;
+  ChildNutrition childNutrition = ChildNutrition();
 
   Widget BuildNutritionContainer(){
     if (food != null){
@@ -81,6 +131,32 @@ class TrackerScreenState extends State<TrackerScreen>{
     }
   }
 
+  Widget buildChildNutritionInfo(BuildContext context){
+    if (Provider.of<ChildProfileProvider>(context, listen: false).getCurrentProfile() != null){
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            "Total Nutrition"
+          ),
+          Text(
+              "Calorie: ${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().calorie.toString()}"
+          ),
+          Text(
+              "Protein: ${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().protein.toString()}"
+          ),
+          Text(
+              "Fat: ${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().fat.toString()}"
+          ),
+          Text(
+              "Carb: ${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().carb.toString()}"
+          ),
+        ],
+      );
+    }
+    return const Text('no profile!');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,6 +165,8 @@ class TrackerScreenState extends State<TrackerScreen>{
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           BuildNutritionContainer(),
+          const Divider(),
+          buildChildNutritionInfo(context),
           SizedBox(
             width: double.infinity,
             height: 32,
@@ -113,11 +191,16 @@ class TrackerScreenState extends State<TrackerScreen>{
                     responseMap = jsonDecode(responseJson!);
                     if (responseMap!['parsed'].isNotEmpty){
                       food = Food.fromFoodMap(responseMap!['parsed'][0]['food']);
+                      childNutrition = ChildNutrition.fromFoodMap(responseMap!['parsed'][0]['food']);
+                      if (context.read<ChildProfileProvider>().getCurrentProfile() != null){
+                        context.read<ChildProfileProvider>().getCurrentProfile()!.addNutrition(childNutrition);
+                        context.read<ChildProfileProvider>().syncProviderPreferences();
+                      }
                     }
                   });
                 }
                 else {
-                  //TODO: bad response handling (tergantung app)
+                  //TODO: bad response (400) handling (tergantung app)
                   //throw Exception("API error bruh");
                 }
                 _searchController.clear();
@@ -125,6 +208,20 @@ class TrackerScreenState extends State<TrackerScreen>{
               child: const Text(
                   "Search Food"
               ),
+            ),
+          ),
+          SizedBox(
+            child: ElevatedButton(
+              child: Text(
+                  "Reset ChildNutrition"
+              ),
+              onPressed: (){
+                if (context.read<ChildProfileProvider>().getCurrentProfile() != null){
+                  context.read<ChildProfileProvider>().getCurrentProfile()!.resetNutrition();
+                  context.read<ChildProfileProvider>().syncProviderPreferences();
+                  setState((){});
+                }
+              },
             ),
           ),
           SizedBox(

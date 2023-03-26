@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:project_purify/screens/tracker_screen.dart';
 
 class ChildProfilePreferences {
   static SharedPreferences? _preferences;
@@ -64,7 +65,7 @@ class ChildProfileProvider with ChangeNotifier {
     provider.setPreferences(ChildProfilePreferences.getPreferences());
     provider.decodeFromPreferences();
 
-    //If no profile yet
+    //Prevents null
     provider._childProfiles ??= <ChildProfile>[];
 
     return provider;
@@ -104,7 +105,6 @@ class ChildProfileProvider with ChangeNotifier {
       if (decodedJson != null){
         if (decodedJson['currentIndex'] != null && decodedJson['profiles'] != null){
           _currentIndex = decodedJson['currentIndex'];
-          //print(decodedJson['profiles']);
           List<dynamic> profileMaps = decodedJson['profiles'];
           if (profileMaps.isNotEmpty){
             _childProfiles ??= <ChildProfile>[];
@@ -132,20 +132,29 @@ class ChildProfile {
   late double _weight = 0.0;
   late double _height = 0.0;
   late bool _sex = true;
+  late ChildNutrition _childNutrition = ChildNutrition();
 
-  ChildProfile(String name, int age, double weight, double height, bool sex){
+  ChildProfile(String name, int age, double weight, double height, bool sex, ChildNutrition childNutrition){
     _name = name;
     _age = age;
     _weight = weight;
     _height = height;
     _sex = sex;
+    _childNutrition = childNutrition;
   }
 
   factory ChildProfile.fromMap(Map<String,dynamic> map){
     //assert(map['name'] != null);
     //assert(map['age'] != null);
     //assert(map['weight'] != null);
-    return ChildProfile(map['name'], map['age'], map['weight'], map['height'], map['sex']);
+    return ChildProfile(
+      map['name'],
+      map['age'],
+      map['weight'],
+      map['height'],
+      map['sex'],
+      ChildNutrition.fromMap(map['childNutrition']),
+    );
   }
 
   Map<String,dynamic> toMap(){
@@ -154,7 +163,8 @@ class ChildProfile {
       'age' : _age,
       'weight' : _weight,
       'height' : _height,
-      'sex' : _sex
+      'sex' : _sex,
+      'childNutrition' : _childNutrition.toMap(),
     };
   }
 
@@ -168,4 +178,36 @@ class ChildProfile {
   void setHeight(bool sex) => _sex = sex;
   bool getSex() => _sex;
   void setSex(bool sex) => _sex = sex;
+  ChildNutrition getNutrition() => _childNutrition;
+  void setNutrition({
+    double? calorie,
+    double? protein,
+    double? fat,
+    double? carb,
+  }){
+    if (calorie != null){
+      _childNutrition.calorie = calorie;
+    }
+    if (protein != null){
+      _childNutrition.protein = protein;
+    }
+    if (fat != null){
+      _childNutrition.fat = fat;
+    }
+    if (carb != null){
+      _childNutrition.carb = carb;
+    }
+  }
+  void resetNutrition(){
+    _childNutrition.calorie = 0;
+    _childNutrition.protein = 0;
+    _childNutrition.fat = 0;
+    _childNutrition.carb = 0;
+  }
+  void addNutrition(ChildNutrition nutrition){
+    _childNutrition.calorie += nutrition.calorie;
+    _childNutrition.protein += nutrition.protein;
+    _childNutrition.fat += nutrition.fat;
+    _childNutrition.carb += nutrition.carb;
+  }
 }
