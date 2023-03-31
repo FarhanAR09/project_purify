@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_purify/screens/login_screen.dart';
+import 'package:project_purify/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/child_profile.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }

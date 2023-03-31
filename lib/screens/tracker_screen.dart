@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:project_purify/providers/child_profile.dart';
+import 'package:project_purify/screens/home_screen.dart';
+import 'package:project_purify/screens/milestone_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:project_purify/keys.dart';
 import 'package:http/http.dart' as http;
@@ -178,8 +180,8 @@ class TrackerScreenState extends State<TrackerScreen>{
       padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(16),
+        color: const Color.fromARGB(255, 23, 184, 151),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
@@ -190,54 +192,131 @@ class TrackerScreenState extends State<TrackerScreen>{
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerLeft,
-                      child: const Text("Caloric Intake"),
+                      child: const Text(
+                        "Caloric Intake",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ),
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerRight,
-                      child: Text(context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().calorie.toStringAsFixed(2)), //dari provider
+                      child: Text(
+                        "${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().calorie.toStringAsFixed(0)}/${caloriesNeeded.toStringAsFixed(0)}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                        ),
+                      ), //dari provider
                     ),
                   ),
                 ],
               ),
-              LinearProgressIndicator(
-                value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().calorie / caloriesNeeded,
+              Padding(
+                padding: const EdgeInsets.all(4),
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.white,
+                  color: Colors.lightGreen,
+                  value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().calorie / caloriesNeeded,
+                ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 16,
           ),
           Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Text("Carbs"),
-                    LinearProgressIndicator(
-                      value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().carb / carbNeeded,
+                    const Text(
+                      "Carbs",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text(context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().carb.toStringAsFixed(2))
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.lightGreen,
+                        value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().carb / carbNeeded,
+                      ),
+                    ),
+                    Text(
+                      "${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().carb.toStringAsFixed(0)}/${carbNeeded.toStringAsFixed(0)}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(width: 16,),
               Expanded(
                 child: Column(
                   children: [
-                    Text("Protein"),
-                    LinearProgressIndicator(
-                      value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().protein / proteinNeeded,
+                    const Text(
+                      "Protein",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text(context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().protein.toStringAsFixed(2))
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.lightGreen,
+                        value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().protein / proteinNeeded,
+                      ),
+                    ),
+                    Text(
+                      "${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().protein.toStringAsFixed(0)}/${proteinNeeded.toStringAsFixed(0)}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    )
                   ],
                 ),
               ),
+              const SizedBox(width: 16,),
               Expanded(
                 child: Column(
                   children: [
-                    Text("Fat"),
-                    LinearProgressIndicator(
-                      value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().fat / fatNeeded,
+                    const Text(
+                      "Fat",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text(context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().fat.toStringAsFixed(2))
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.lightGreen,
+                        value: context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().fat / fatNeeded,
+                      ),
+                    ),
+                    Text(
+                      "${context.watch<ChildProfileProvider>().getCurrentProfile()!.getNutrition().fat.toStringAsFixed(0)}/${fatNeeded.toStringAsFixed(0)}",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -248,8 +327,28 @@ class TrackerScreenState extends State<TrackerScreen>{
     );
   }
 
+  int _selectedNavBarIndex = 1;
+
   @override
   Widget build(BuildContext context) {
+    List<Function> actions = [
+          (){
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+          return HomeScreen();
+        }));
+      },
+          (){
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+          return TrackerScreen();
+        }));
+      },
+          (){
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+          return MilestoneScreen();
+        }));
+      },
+    ];
+
     double inputMass = 100;
     void getFromAPI() async {
       if(!isOpenPanel.contains(true)){
@@ -414,11 +513,21 @@ class TrackerScreenState extends State<TrackerScreen>{
               height: 16,
             ),
             SizedBox(
-              height: 32,
               child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                ),
                 onPressed: getFromAPI,
-                child: const Text(
-                    "Add Food"
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: const Color.fromARGB(255, 20, 163, 134),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: const Text(
+                      "Add Food"
+                  ),
                 ),
               ),
             ),
@@ -466,70 +575,124 @@ class TrackerScreenState extends State<TrackerScreen>{
               children: [
                 Row(
                   children: [
-                    SizedBox(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.black,
-                          size: 24,
-                        ),
-                        onPressed: (){
-                          Navigator.pop(context);
-                        },
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
                       ),
+                      child: const Icon(Icons.arrow_back, color: Colors.black,),
+                      onPressed: (){
+                        Navigator.pop(context);
+                      },
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        height: 32,
-                        child: TextFormField(
-                          controller: _searchController,
-                          decoration: const InputDecoration(
-                            hintText: 'Search Food',
-                            icon: Icon(Icons.search, color: Colors.grey, size: 24,),
-                          ),
-                        ),
+                    const Text(
+                      "Nutrition Diary",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        spreadRadius: -8,
+                        blurRadius: 16,
+                        offset: Offset(0,4),
+                      ),
+                    ],
+                  ),
+                  height: 32,
+                  child: TextFormField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search Food',
+                      icon: Icon(Icons.search, color: Colors.grey, size: 24,),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24,),
                 buildInfo(),
+                const SizedBox(height: 32,),
                 ExpansionPanelList(
+                  dividerColor: Colors.transparent,
+                  elevation: 0,
                   children: [
                     ExpansionPanel(
+                      backgroundColor: const Color.fromARGB(255, 242, 244, 245),
                       isExpanded: isOpenPanel[0],
                       headerBuilder: (context, open){
-                        return const Text("Breakfast");
+                        return const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            "Breakfast",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
                       },
                       body: buildPanelBody(),
                     ),
                     ExpansionPanel(
+                      backgroundColor: const Color.fromARGB(255, 242, 244, 245),
                       isExpanded: isOpenPanel[1],
                       headerBuilder: (context, open){
-                        return const Text("Lunch");
+                        return const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            "Lunch",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
                       },
                       body: buildPanelBody(),
                     ),
                     ExpansionPanel(
+                      backgroundColor: const Color.fromARGB(255, 242, 244, 245),
                       isExpanded: isOpenPanel[2],
                       headerBuilder: (context, open){
-                        return const Text("Dinner");
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            "Dinner",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
                       },
                       body: buildPanelBody(),
                     ),
                     ExpansionPanel(
+                      backgroundColor: const Color.fromARGB(255, 242, 244, 245),
                       isExpanded: isOpenPanel[3],
                       headerBuilder: (context, open){
-                        return const Text("Snack");
+                        return const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            "Snack",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
                       },
                       body: buildPanelBody(),
                     ),
@@ -545,27 +708,37 @@ class TrackerScreenState extends State<TrackerScreen>{
                     });
                   },
                 ),
-                SizedBox(
-                  child: ElevatedButton(
-                    child: const Text(
-                        "Reset ChildNutrition"
-                    ),
-                    onPressed: (){
-                      if (context.read<ChildProfileProvider>().getCurrentProfile() != null){
-                        context.read<ChildProfileProvider>().getCurrentProfile()!.resetNutrition();
-                        context.read<ChildProfileProvider>().syncProviderPreferences();
-                        setState((){
-                          //Otomatis karena rebuild read provider
-                        });
-                      }
-                    },
-                  ),
-                ),
-
               ],
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined, size: 36,),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.soup_kitchen, size: 36,),
+            label: "Tracker",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt_rounded, size: 36,),
+            label: "Milestone",
+          ),
+        ],
+        currentIndex: _selectedNavBarIndex,
+        selectedItemColor: const Color.fromARGB(255, 0, 83, 98),
+        unselectedItemColor: Colors.black,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        onTap: (int index){
+          setState(() {
+            _selectedNavBarIndex = index;
+            actions[index]();
+          });
+        },
       ),
     );
   }
