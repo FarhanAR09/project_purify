@@ -44,7 +44,7 @@ class SplashScreenState extends State<SplashScreen> {
           )
       ),
       child: Center(
-        child: Image.asset("images/sprout_text.png"),
+        child: Image.asset("assets/images/sprout_text.png"),
       ),
     );
   }
