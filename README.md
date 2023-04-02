@@ -2,15 +2,6 @@
 
 gedeesce
 
-## Getting Started
+## Figma
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://www.figma.com/proto/EETlGIr6ZwkHTzipSstnhs/Sprout-App?page-id=1468%3A25013&node-id=1468-25775&viewport=3740%2C-951%2C0.22&scaling=scale-down&starting-point-node-id=1468%3A25775&show-proto-sidebar=1
